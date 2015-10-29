@@ -1,0 +1,16 @@
+dist_path=("debian"
+           "fedora"
+           "slackware"
+           "ubuntu-trusty")
+dist_name=("01"
+           "02"
+           "03"
+           "04")
+dist_desc=("Debian Jessie 8.0            [DVD]"
+           "Fedora 21                    [CD]"
+           "Slackware 12-13              [CD/DVD]"
+           "Ubuntu Trusty Tahr 14.04     [CD/DVD]")
+dist_title=("DEBIAN JESSIE 8.0" 
+           "FEDORA"
+           "SLACKWARE"
+           "UBUNTU TRUSTY TAHR 14.04")

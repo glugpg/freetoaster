@@ -1,0 +1,7 @@
+# menu debian
+iso_name=("01"
+          "02")
+iso_desc=("Debian netinst 8.2 (i386)"
+          "Debian netinst 8.2 (amd64)")
+iso_file=("debian-8.2.0-i386-netiinst.iso"
+          "debian-8.2.0-amd64-netiinst.iso")

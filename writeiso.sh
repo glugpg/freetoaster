@@ -37,15 +37,13 @@ function select_distro
 {
     tmp_clean
     # carica le info della distribuzione selezionata da file 
-    for counter in $(seq 0 $((${#dist_path[@]} - 1)))
+    for counter in $(seq 0 $((${#distro[@]} - 1)))
     do
         dist_id="000"$(($counter + 1))
         if [ "$1" == "${dist_id: -2}" ]; then
-            f_path=${dist_path[$counter]}
+            f_path=`echo ${distro[$counter]} | cut -d "|" -f 2 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
             source "$f_path/$f_listiso"
-            list_desc=("${iso_desc[@]:0}")
-            list_iso=("${iso_file[@]:0}")
-            list_title=${dist_title[$counter]}
+            list_title=`echo ${distro[$counter]} | cut -d "|" -f 1 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//" | tr '[:lower:]' '[:upper:]'`
         fi
     done
     # crea il menu di selezione delle iso
@@ -53,10 +51,11 @@ function select_distro
     echo     "       \"$list_title\\nSeleziona l'immagine da masterizzare:\" \\" >>"$f_source"
     echo     "       0 0 0 \\" >>"$f_source"
     # elenca tutte le opzioni dal relativo array delle iso
-    for counter in $(seq 0 $((${#list_iso[@]} - 1)))
+    for counter in $(seq 0 $((${#iso[@]} - 1)))
     do
         list_id="000"$(($counter + 1))
-        echo "       \"${list_id: -2}\" \"${list_desc[$counter]}\" \\" >>"$f_source"
+        list_desc=`echo ${iso[$counter]} | cut -d "|" -f 1 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
+        echo "       \"${list_id: -2}\" \"$list_desc\" \\" >>"$f_source"
     done
     echo     "    2>\"$f_result\"" >>"$f_source"
     echo     "    exit_val=\"\$?\"" >>"$f_source"
@@ -64,11 +63,12 @@ function select_distro
     echo     "        ret_val=\`cat \"$f_result\"\`" >>"$f_source"
     echo     "        case \"\$ret_val\" in" >>"$f_source"
     # verifica l'iso selezionata
-    for counter in $(seq 0 $((${#list_iso[@]} - 1)))
+    for counter in $(seq 0 $((${#iso[@]} - 1)))
     do
         list_id="000"$(($counter + 1))
+        list_iso=`echo ${iso[$counter]} | cut -d "|" -f 2 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
         echo "        \"${list_id: -2}\")" >>"$f_source"
-        echo "            f_dist=\"\$f_path/\${list_iso[$counter]}\"" >>"$f_source"
+        echo "            f_dist=\"\$f_path/\$list_iso\"" >>"$f_source"
         echo "            ;;" >>"$f_source"
     done
     echo     "        esac" >>"$f_source"
@@ -95,10 +95,11 @@ do
     echo     "       \"Elenco delle distribuzioni disponibili per la masterizzazione:\" \\" >>"$f_source"
     echo     "       0 0 0 \\" >>"$f_source"
     # elenca tutte le opzioni dal relativo array
-    for counter in $(seq 0 $((${#dist_path[@]} - 1)))
+    for counter in $(seq 0 $((${#distro[@]} - 1)))
     do
         dist_id="000"$(($counter + 1))
-        echo "       \"${dist_id: -2}\" \"${dist_desc[$counter]}\" \\" >>"$f_source"
+        dist_desc=`echo ${distro[$counter]} | cut -d "|" -f 1 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
+        echo "       \"${dist_id: -2}\" \"$dist_desc\" \\" >>"$f_source"
     done
     echo     "    2>\"$f_result\"" >>"$f_source"
     echo     "    exit_val=\"\$?\"" >>"$f_source"

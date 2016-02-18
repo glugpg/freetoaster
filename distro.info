@@ -1,16 +1,18 @@
-dist_path=("debian"
-           "fedora"
-           "slackware"
-           "ubuntu-trusty")
-dist_name=("01"
-           "02"
-           "03"
-           "04")
-dist_desc=("Debian Jessie 8.0            [DVD]"
-           "Fedora 21                    [CD]"
-           "Slackware 12-13              [CD/DVD]"
-           "Ubuntu Trusty Tahr 14.04     [CD/DVD]")
-dist_title=("DEBIAN JESSIE 8.0" 
-           "FEDORA"
-           "SLACKWARE"
-           "UBUNTU TRUSTY TAHR 14.04")
+# -- MENU DISTRIBUZIONI --
+
+# description, path
+distro=("Debian Lenny 5.0 [DVD]            | debian"
+        "Fedora 9-10-11 [CD]               | fedora"
+        "Gentoo Linux [CD]                 | gentoo"
+        "Slackware 12-13 [CD/DVD]          | slackware"
+        "Ubuntu Hardy Heron 8.04.1 [CD]    | hardy"
+        "Ubuntu Intrepid Ibex 8.10 [CD]    | intrepid"
+        "Ubuntu Jaunty Jackalope 9.04 [CD] | jaunty"
+        "Ubuntu Karmic Koala 9.10 [CD/DVD] | karmic"
+        "BackTrack 3-4 [CD]                | backtrack"
+        "Knoppix 6 [CD]                    | knoppix"
+        "Linux Mint 7 [CD]                 | mint"
+        "OpenGeu 8.04.1 [CD]               | opengeu"
+        "Puppy Linux [CD]                  | puppy"
+        "Vector Linux [CD]                 | vector"
+        "OpenSolaris 2008.11 [CD]          | opensolaris")

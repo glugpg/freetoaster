@@ -5,11 +5,12 @@ f_source_menu=`whoami`"_menu.sh"
 f_result=`whoami`"_result.tmp"
 
 # variabili predefinite per il funzionamento dello script
-dev_id="1"                   # indice del masterizzatore da utilizzare
-std_speed="48"               # speed per la masterizzazione CD/DVD
-program_name="xfburn"        # software alternativo per la masterizzazione CD/DVD
 f_listiso="listiso.info"     # file con la list delle iso per una distribuzione
 f_listdistro="distro.info"   # file con la lista delle tipologie di distribuzioni
+dev_id="1"                   # indice del masterizzatore da utilizzare
+std_speed="48"               # speed per la masterizzazione CD/DVD con WODIM
+std_buffer="4M"              # bs per il comand dd
+program_name="xfburn"        # software alternativo per la masterizzazione CD/DVD
 use_alternative="0"          # flag per l'uso del software di masterizzazione alternativo
 
 # legge i parametri passati allo script
@@ -241,7 +242,7 @@ do
                     # esegue la funzione per la selezione del device USB
                     select_usbdevice
                     if [ ! -z "$f_usbdev" ]; then
-                        dd if=$f_dist of=$f_usbdev bs=4M
+                        dd if=$f_dist of=$f_usbdev bs=$std_buffer
                         exit_val="$?"
                         sync
                         read

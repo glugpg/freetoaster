@@ -10,7 +10,7 @@ f_listdistro="distro.info"   # file con la lista delle tipologie di distribuzion
 dev_id="1"                   # indice del masterizzatore da utilizzare
 std_speed="48"               # speed per la masterizzazione CD/DVD con WODIM
 std_buffer="4M"              # bs per il comand dd
-program_name="xfburn"        # software alternativo per la masterizzazione CD/DVD
+altprogram_name="xfburn"     # software alternativo per la masterizzazione CD/DVD
 use_alternative="0"          # flag per l'uso del software di masterizzazione alternativo
 
 # legge i parametri passati allo script
@@ -228,12 +228,12 @@ do
                             fi
                         else
                             # esegue la masterizzazione del cd con XFBURN
-                            alternative_path=`which $program_name`
+                            alternative_path=`which $ltprogram_name`
                             # verifica presenza xfburn nel sistema
                             if [ -n "$alternative_path" ]; then
-                                $program_name -i "$f_dist" 2> /dev/null
+                                $altprogram_name -i "$f_dist" 2> /dev/null
                             else
-                                dialog --msgbox "Comando $program_name non presente nel sistema." 6 34
+                                dialog --msgbox "Comando $altprogram_name non presente nel sistema." 6 34
                             fi
                         fi
                     fi

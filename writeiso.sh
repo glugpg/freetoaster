@@ -243,6 +243,7 @@ do
                     if [ ! -z "$f_usbdev" ]; then
                         dd if=$f_dist of=$f_usbdev bs=4M
                         exit_val="$?"
+                        sync
                         read
                         if [[ "$exit_val" -eq "0" ]] ; then
                             dialog --msgbox "Copia terminata con successo $f_dist. ($exit_val)" 6 34

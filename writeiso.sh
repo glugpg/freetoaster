@@ -10,22 +10,37 @@ f_listdistro="distro.info"   # file con la lista delle tipologie di distribuzion
 dev_id="1"                   # indice del masterizzatore da utilizzare
 std_speed="48"               # speed per la masterizzazione CD/DVD con WODIM
 std_buffer="4M"              # bs per il comand dd
-altprogram_name="xfburn"     # software alternativo per la masterizzazione CD/DVD
 use_alternative="0"          # flag per l'uso del software di masterizzazione alternativo
+altprogram_name="xfburn"     # software alternativo per la masterizzazione CD/DVD
+a_name=`echo "$altprogram_name" | tr [:lower:] [:upper:]`
 
 # legge i parametri passati allo script
-while getopts "ai:" params
+while getopts "ahi:" params
 do
     case "$params" in
+        a)
+            use_alternative="1"
+            ;;
+        h)
+            echo
+            echo    "Uso: ${0##*/} [-ahi]"
+            echo    "     Permette la masterizzazione su CD/DVD e USB device di distribuzioni"
+            echo    "     GNU/Linux presenti nel sistema in formato iso utilizzando una interfaccia"
+            echo    "     semplificata per la selezione della distribuzione desiderata."
+            echo 
+            echo    "     -a       abilita la masterizzazione utilizzando, in alternativa a WODIM"
+            echo    "              il software $a_name." 
+            echo    "     -h       mostra queste informazioni ed esce"
+            echo    "     -i INDEX imposta, opzionalmente, l'ennesimo masterizzatore CD/DVD."
+            echo
+	        exit 0
+	        ;;
         i)
             if [ -n "$OPTARG" ]; then
                 dev_id="$OPTARG"
             else
                 dev_id ="1"
             fi
-            ;;
-        a)
-            use_alternative="1"
             ;;
     esac
 done
@@ -58,8 +73,7 @@ function tmp_clean {
     fi
 }
 
-function select_iso
-{
+function select_iso {
     tmp_clean
 
     f_path=""
@@ -228,7 +242,7 @@ do
                             fi
                         else
                             # esegue la masterizzazione del cd con XFBURN
-                            alternative_path=`which $ltprogram_name`
+                            alternative_path=`which $altprogram_name`
                             # verifica presenza xfburn nel sistema
                             if [ -n "$alternative_path" ]; then
                                 $altprogram_name -i "$f_dist" 2> /dev/null

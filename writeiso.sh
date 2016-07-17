@@ -7,6 +7,7 @@ f_result=`whoami`"_result.tmp"
 # variabili predefinite per il funzionamento dello script
 f_listiso="listiso.info"     # file con la list delle iso per una distribuzione
 f_listdistro="distro.info"   # file con la lista delle tipologie di distribuzioni
+array_sep="|"                # carattere di separazione elementi array
 dev_id="1"                   # indice del masterizzatore da utilizzare
 std_speed="48"               # speed per la masterizzazione CD/DVD con WODIM
 std_buffer="4M"              # bs per il comand dd
@@ -33,8 +34,8 @@ do
             echo    "     -h       mostra queste informazioni ed esce"
             echo    "     -i INDEX imposta, opzionalmente, l'ennesimo masterizzatore CD/DVD."
             echo
-	        exit 0
-	        ;;
+            exit 0
+            ;;
         i)
             if [ -n "$OPTARG" ]; then
                 dev_id="$OPTARG"
@@ -56,6 +57,9 @@ f_path=""
 f_dist=""
 f_usbdev=""
 
+distro=""
+iso=""
+
 # resetta le varibili di uscita dai menu di scelta
 ret_val=""
 exit_val=""
@@ -65,12 +69,23 @@ loop_val=""
 
 function tmp_clean {
     # svuota i file temporanei utilizzati dallo script
-    if [ -e "$f_result" ] ; then
+    if [ -e "$f_result" ]; then
         rm "$f_result"
     fi
-    if [ -e "$f_source_menu" ] ; then
+    if [ -e "$f_source_menu" ]; then
         rm "$f_source_menu"
     fi
+}
+
+function load_listarray {
+    old_IFS=$IFS
+    IFS=$'\n'
+    if [ -z "$1" ]; then
+        distro=($(grep -v "#" "$f_listdistro" | grep -v -e "^$"))
+    else
+        iso=($(grep -v "#" "$1/$f_listiso" | grep -v -e "^$"))
+    fi
+    IFS=$old_IFS
 }
 
 function select_iso {
@@ -85,11 +100,11 @@ function select_iso {
     do
         dist_id="000"$(($counter + 1))
         if [ "$1" -eq "${dist_id: -2}" ]; then
-            f_path=`echo ${distro[$counter]} | cut -d "|" -f 2 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
+            f_path=`echo ${distro[$counter]} | cut -d $array_sep -f 1 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
             # verifica che la cartella della tipologia di distribuzione esista
             if [ -e "$f_path/$f_listiso" ]; then
-                source "$f_path/$f_listiso"
-                list_title=`echo ${distro[$counter]} | cut -d "|" -f 1 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//" | tr '[:lower:]' '[:upper:]'`
+                load_listarray "$f_path"
+                list_title=`echo ${distro[$counter]} | cut -d $array_sep -f 2 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//" | tr '[:lower:]' '[:upper:]'`
             else
                 list_title=""
             fi
@@ -105,19 +120,19 @@ function select_iso {
         for counter in $(seq 0 $((${#iso[@]} - 1)))
         do
             list_id="000"$(($counter + 1))
-            list_desc=`echo ${iso[$counter]} | cut -d "|" -f 1 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
+            list_desc=`echo ${iso[$counter]} | cut -d $array_sep -f 2 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
             echo "       \"${list_id: -2}\" \"$list_desc\" \\" >>"$f_source_menu"
         done
         echo     "    2>\"$f_result\"" >>"$f_source_menu"
         echo     "    exit_val=\"\$?\"" >>"$f_source_menu"
-        echo     "    if [ \"\$exit_val\" -eq \"0\" ] ; then" >>"$f_source_menu"
+        echo     "    if [ \"\$exit_val\" -eq \"0\" ]; then" >>"$f_source_menu"
         echo     "        ret_val=\`cat \"$f_result\"\`" >>"$f_source_menu"
         echo     "        case \"\$ret_val\" in" >>"$f_source_menu"
         # scrive nello script menu la "case" per individuare la iso selezionata
         for counter in $(seq 0 $((${#iso[@]} - 1)))
         do
             list_id="000"$(($counter + 1))
-            list_iso=`echo ${iso[$counter]} | cut -d "|" -f 2 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
+            list_iso=`echo ${iso[$counter]} | cut -d $array_sep -f 1 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
             iso_item="$f_path/$list_iso"
             echo "        \"${list_id: -2}\")" >>"$f_source_menu"
             echo "            f_dist=$iso_item" >>"$f_source_menu"
@@ -153,7 +168,7 @@ function select_usbdevice {
     done
     echo     "    2>\"$f_result\"" >>"$f_source_menu"
     echo     "    exit_val=\"\$?\"" >>"$f_source_menu"
-    echo     "    if [ \"\$exit_val\" -eq \"0\" ] ; then" >>"$f_source_menu"
+    echo     "    if [ \"\$exit_val\" -eq \"0\" ]; then" >>"$f_source_menu"
     echo     "        ret_val=\`cat \"$f_result\"\`" >>"$f_source_menu"
     echo     "        case \"\$ret_val\" in" >>"$f_source_menu"
     # scrive nello script menu la "case" per individuare il device USB selezionato
@@ -179,7 +194,7 @@ function select_usbdevice {
 # Main procedure
 
 # carica la lista delle tipologia di distribuzione
-source "$f_listdistro"
+load_listarray
 # inizia il ciclo infinito per la selezione della distribuzione
 loop_val="0"
 while [ "$loop_val" -eq "0" ]
@@ -195,12 +210,12 @@ do
     for counter in $(seq 0 $((${#distro[@]} - 1)))
     do
         dist_id="000"$(($counter + 1))
-        dist_desc=`echo ${distro[$counter]} | cut -d "|" -f 1 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
+        dist_desc=`echo ${distro[$counter]} | cut -d $array_sep -f 2 | sed -e "s/^[[:blank:]]*//" | sed -e "s/[[:blank:]]*$//"`
         echo "       \"${dist_id: -2}\" \"$dist_desc\" \\" >>"$f_source_menu"
     done
     echo     "    2>\"$f_result\"" >>"$f_source_menu"
     echo     "    exit_val=\"\$?\"" >>"$f_source_menu"
-    echo     "    if [ \"\$exit_val\" -eq \"0\" ] ; then" >>"$f_source_menu"
+    echo     "    if [ \"\$exit_val\" -eq \"0\" ]; then" >>"$f_source_menu"
     echo     "        ret_val=\`cat \"$f_result\"\`" >>"$f_source_menu"
     echo     "        loop_val=\"0\"" >>"$f_source_menu"
     echo     "    else" >>"$f_source_menu"
@@ -228,14 +243,14 @@ do
                         "Inserisci il nuovo cd/dvd nel masterizzatore, quindi premi <Si> per iniziare la copia di:\n\n   $f_dist" \
                         0 0
                     exit_val="$?"
-                    if [ "$exit_val" -eq "0" ] ; then
+                    if [ "$exit_val" -eq "0" ]; then
                         # verifica se utilizzare WODIM oppure XFBURN
                         if [ $use_alternative -eq "0" ]; then
                             # esegue la masterizzazione del cd con WODIM
                             wodim -v -eject speed="$speed" fs=16m gracetime=0 driveropts=burnfree dev="$dev_disk" -data -nopad "$f_dist"
                             exit_val="$?"
                             read
-                            if [[ "$exit_val" -eq "0" ]] ; then
+                            if [[ "$exit_val" -eq "0" ]]; then
                                 dialog --msgbox "Copia terminata con successo $f_dist. ($exit_val)" 6 34
                             else
                                 dialog --msgbox "Peccato,  non c'e l'ho fatta. ($exit_val)" 6 34
@@ -260,7 +275,7 @@ do
                         exit_val="$?"
                         sync
                         read
-                        if [[ "$exit_val" -eq "0" ]] ; then
+                        if [[ "$exit_val" -eq "0" ]]; then
                             dialog --msgbox "Copia terminata con successo $f_dist. ($exit_val)" 6 34
                         else
                             dialog --msgbox "Peccato,  non c'e l'ho fatta. ($exit_val)" 6 34

@@ -1,20 +1,20 @@
 # ELENCO DELLE DISTRIBUZIONI
 # N.B. il file deve terminare con una riga vuota
 #
-# elemento  | descrizione
+# nome distro  | descrizione
 
-debian      | Debian Lenny 5.0 [DVD]
-fedora      | Fedora 9-10-11 [CD]
-gentoo      | Gentoo Linux [CD]
-slackware   | Slackware 12-13 [CD/DVD]
-hardy       | Ubuntu Hardy Heron 8.04.1 [CD]
-intrepid    | Ubuntu Intrepid Ibex 8.10 [CD]
-jaunty      | Ubuntu Jaunty Jackalope 9.04 [CD]
-karmic      | Ubuntu Karmic Koala 9.10 [CD/DVD]
-backtrack   | BackTrack 3-4 [CD]
-knoppix     | Knoppix 6 [CD]
-mint        | Linux Mint 7 [CD]
-opengeu     | OpenGeu 8.04.1 [CD]
-puppy       | Puppy Linux [CD]
-vector      | Vector Linux [CD]
-opensolaris | OpenSolaris 2008.11 [CD]
+debian         | Debian Lenny 5.0 [DVD]
+fedora         | Fedora 9-10-11 [CD]
+gentoo         | Gentoo Linux [CD]
+slackware      | Slackware 12-13 [CD/DVD]
+hardy          | Ubuntu Hardy Heron 8.04.1 [CD]
+intrepid       | Ubuntu Intrepid Ibex 8.10 [CD]
+jaunty         | Ubuntu Jaunty Jackalope 9.04 [CD]
+karmic         | Ubuntu Karmic Koala 9.10 [CD/DVD]
+backtrack      | BackTrack 3-4 [CD]
+knoppix        | Knoppix 6 [CD]
+mint           | Linux Mint 7 [CD]
+opengeu        | OpenGeu 8.04.1 [CD]
+puppy          | Puppy Linux [CD]
+vector         | Vector Linux [CD]
+opensolaris    | OpenSolaris 2008.11 [CD]

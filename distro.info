@@ -2,7 +2,7 @@
 # N.B. il file deve terminare con una riga vuota
 #
 # nome distro  | descrizione
-
+# ------------------------------------------------------
 debian         | Debian Lenny 5.0 [DVD]
 fedora         | Fedora 9-10-11 [CD]
 gentoo         | Gentoo Linux [CD]

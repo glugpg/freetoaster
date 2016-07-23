@@ -271,7 +271,7 @@ do
                     # esegue la funzione per la selezione del device USB
                     select_usbdevice
                     if [ ! -z "$f_usbdev" ]; then
-                        dd if=$f_dist of=$f_usbdev bs=$std_buffer
+                        sudo dd if=$f_dist | pv | sudo dd of=$f_usbdev bs=$std_buffer
                         exit_val="$?"
                         sync
                         read

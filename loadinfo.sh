@@ -18,6 +18,7 @@ descri_iso="...descrizione iso..."
 
 type_iso="iso"
 type_distro="distro"
+f_listiso="listiso.info"     # file con la list delle iso per una distribuzione
 
 pad=$(printf '%0.1s' " "{1..80})
 padlength=16
@@ -80,10 +81,22 @@ else
 	if [ $new_file -eq 1 ]; then
 	    echo "$header_iso"
 	fi
-    for element in $(ls | grep ".iso$")
-    do
-        printf '%s' "$element"
-        printf '%*.*s' 0 $((padlength - ${#element} - ${#separator} )) "$pad"
-        printf '%s\n' "$separator $descri_iso"
-    done
+
+	for element in $(ls | grep ".iso$")
+	do
+		if [ -e "$f_listiso" ]; then
+			row_founded=$(grep $element $f_listiso)
+		if [ -z "$row_founded" ]; then
+			printf '%s' "$element"
+			printf '%*.*s' 0 $((padlength - ${#element} - ${#separator} )) "$pad"
+			printf '%s\n' "$separator $descri_iso"
+		else
+			echo $row_founded
+		fi
+	else
+      printf '%s' "$element"
+      printf '%*.*s' 0 $((padlength - ${#element} - ${#separator} )) "$pad"
+      printf '%s\n' "$separator $descri_iso"
+    fi
+  done
 fi

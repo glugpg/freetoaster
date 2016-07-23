@@ -7,11 +7,11 @@ Sono inoltre necessari i seguenti pacchetti:
 * _wodim_:  per la gestione della masterizzazione;
 * _dialog_: per la realizzazione dell'interfaccia di selezione;
 * _dd_: per masterizzare su device USB;
-* _pv_: per ottenere a video un feedback del comando dd.
+* *pv*: per ottenere a video un feedback del comando dd.
 
 Lo script **writeiso.sh** usa dei file di testo per la definizione degli elenchi di iso tra cui scegliere.
 
 Lo script **loadinfo.sh** aiuta nella generazione dei file di testo utilizzati da **writeiso.sh**.
 
-E' stato aggiunta la possibilità di eseguire la masterizzazione anche con il software di masterizzazione con interfaccia grafica **xfburn**. In questo caso deve essere attivo il server X e deve essere installato il software xfburn.
+E' stato aggiunta la possibilità di eseguire la masterizzazione anche con il software di masterizzazione con interfaccia grafica **xfburn**. In questo caso deve essere attivo il server X e deve essere installato il programma **xfburn**.
 

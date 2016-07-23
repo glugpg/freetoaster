@@ -9,3 +9,5 @@ Lo script usa dei file di testo per la definizione degli elenchi di iso tra cui 
 E' stato aggiunta la possibilità di eseguire la masterizzazione anche con il software di masterizzazione con interfaccia grafica xfburn. In questo caso deve essere attivo il server X e deve essere installato il software xfburn.
 
 E' stata aggiunta la possibilità di masterizzare su device USB. In queto caso deve essere installato il software dd.
+
+Per avere un feedback dell'esecuzione del comando dd, deve essere installato anche il software pv.

@@ -19,6 +19,7 @@ descri_iso="...descrizione iso..."
 type_iso="iso"
 type_distro="distro"
 f_listiso="listiso.info"     # file con la list delle iso per una distribuzione
+f_listdistro="distro.info"   # file con la lista delle tipologie di distribuzioni
 
 pad=$(printf '%0.1s' " "{1..80})
 padlength=16
@@ -72,9 +73,20 @@ if [ $infotype == $type_distro ]; then
     fi
     for element in $(ls -d */ | sed -e 's/\/$//')
     do
-        printf '%s' "$element"
-        printf '%*.*s' 0 $((padlength - ${#element} - ${#separator} )) "$pad"
-        printf '%s\n' "$separator $descri_distro"
+		if [ -e "$f_listdistro" ]; then
+			row_founded=$(grep -e "^$element" "$f_listdistro")
+			if [ -z "$row_founded" ]; then
+				printf '%s' "$element"
+				printf '%*.*s' 0 $((padlength - ${#element} - ${#separator} )) "$pad"
+				printf '%s\n' "$separator $descri_iso"
+			else
+				echo $row_founded
+			fi
+		else
+			printf '%s' "$element"
+			printf '%*.*s' 0 $((padlength - ${#element} - ${#separator} )) "$pad"
+			printf '%s\n' "$separator $descri_distro"
+		fi
     done
 # primo parametro passato 'lista iso'
 else
@@ -85,7 +97,7 @@ else
 	for element in $(ls | grep ".iso$")
 	do
 		if [ -e "$f_listiso" ]; then
-			row_founded=$(grep $element $f_listiso)
+			row_founded=$(grep -e "^$element" "$f_listiso")
 		if [ -z "$row_founded" ]; then
 			printf '%s' "$element"
 			printf '%*.*s' 0 $((padlength - ${#element} - ${#separator} )) "$pad"

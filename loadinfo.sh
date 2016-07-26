@@ -116,11 +116,11 @@ function print_info()
 
     if [ $1 -eq 1 ]; then
         printf '%s' "$3" >> "$2$ext_tmp"
-        printf '%*.*s' 0 $((fcol_len - ${#3} - ${#array_sep} )) "$pad" >> "$2$ext_tmp"
+        printf '%*.*s' 0 $(($fcol_len - ${#3} - ${#array_sep})) "$pad" >> "$2$ext_tmp"
         printf '%s\n' "$array_sep $4" >> "$2$ext_tmp"
     else
         printf '%s' "$3"
-        printf '%*.*s' 0 $((fcol_len - ${#3} - ${#array_sep} )) "$pad"
+        printf '%*.*s' 0 $(($fcol_len - ${#3} - ${#array_sep})) "$pad"
         printf '%s\n' "$array_sep $4"
     fi
 }
@@ -150,8 +150,8 @@ if [ $infotype == $type_distro ]; then
             echo "$header_distro3"
         fi
         # allinea la riga di intestazione che descrive il formato delle colonne
-        name_element=$(echo "$header_distro4" | cut -d $array_sep -f 1 | sed -e 's/^\ //')
-        descri_element=$(echo "$header_distro4" | cut -d $array_sep -f 2 | sed -e 's/^\ //')
+        name_element=$(echo "$header_distro4" | cut -d $array_sep -f 1 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        descri_element=$(echo "$header_distro4" | cut -d $array_sep -f 2 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
         print_info $write_file "$f_listdistro" "$name_element" "$descri_element"
         if [ $write_file -eq 1 ]; then
             echo "#$header_sep" >> "$f_listdistro$ext_tmp"
@@ -163,27 +163,28 @@ if [ $infotype == $type_distro ]; then
     # inserisce l'elenco delle distribuzioni (directories)
     for element in $(ls -d */ | sed -e 's/\/$//')
     do
+        t_element=$(echo $element | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
         # verifica se l'elmenento (directory)
         # analizzto contieme immagini .iso
-        iso_list=($(ls "$element" | grep ".iso$"))
+        iso_list=($(ls "$t_element" | grep ".iso$"))
         if [ ! -z $iso_list ]; then
             # verifica se l'elemento analizzato sia presente
             # nel precedente file dell informazioni
             if [ -e "$f_listdistro" ]; then
-                this_element=$(grep -e "^$element" "$f_listdistro")
+                this_element=$(grep -e "^$t_element" "$f_listdistro")
                 if [ -z "$this_element" ]; then
                     # inserisce l'elemento analizzato
-                    print_info $write_file "$f_listdistro" "$element" "$descri_distro"
+                    print_info $write_file "$f_listdistro" "$t_element" "$descri_distro"
                 else
                     # inserisce l'elemento analizzato recuperandolo
                     # dal precedente file delle informazioni
-                    name_element=$(echo "$this_element" | cut -d $array_sep -f 1 | sed -e 's/^\ //')
-                    descri_element=$(echo "$this_element" | cut -d $array_sep -f 2 | sed -e 's/^\ //')
+                    name_element=$(echo "$this_element" | cut -d $array_sep -f 1 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+                    descri_element=$(echo "$this_element" | cut -d $array_sep -f 2 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
                     print_info $write_file "$f_listdistro" "$name_element" "$descri_element"
                 fi
             else
                 # inserisce la distribuzione
-                print_info $write_file "$f_listdistro" "$element" "$descri_distro"
+                print_info $write_file "$f_listdistro" "$t_element" "$descri_distro"
             fi
         fi
     done
@@ -211,8 +212,8 @@ else
             echo "$header_iso3"
         fi
         # allinea la riga di intestazione che descrive il formato delle colonne
-        name_element=$(echo "$header_iso4" | cut -d $array_sep -f 1 | sed -e 's/^\ //')
-        descri_element=$(echo "$header_iso4" | cut -d $array_sep -f 2 | sed -e 's/^\ //')
+        name_element=$(echo "$header_iso4" | cut -d $array_sep -f 1 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        descri_element=$(echo "$header_iso4" | cut -d $array_sep -f 2 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
         print_info $write_file "$f_listiso" "$name_element" "$descri_element"
         if [ $write_file -eq 1 ]; then
             echo "#$header_sep" >> "$f_listiso$ext_tmp"
@@ -224,23 +225,24 @@ else
     # inserisce l'elenco delle iso
     for element in $(ls | grep ".iso$")
     do
+        t_element=$(echo $element | sed -e 's/[[:space:]]*$//')
         # verifica se l'elemento analizzato sia presente
         # nel precedente file dell informazioni
         if [ -e "$f_listiso" ]; then
-            this_element=$(grep -e "^$element" "$f_listiso")
+            this_element=$(grep -e "^$t_element" "$f_listiso")
             if [ -z "$this_element" ]; then
                 # inserisce l'elemento analizzato
-                print_info $write_file "$f_listiso" "$element" "$descri_iso"
+                print_info $write_file "$f_listiso" "$t_element" "$descri_iso"
             else
                 # inserisce l'elemento analizzato recuperandolo
                 # dal precedente file delle informazioni
-                name_element=$(echo "$this_element" | cut -d $array_sep -f 1 | sed -e 's/^\ //')
-                descri_element=$(echo "$this_element" | cut -d $array_sep -f 2 | sed -e 's/^\ //')
+                name_element=$(echo "$this_element" | cut -d $array_sep -f 1 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+                descri_element=$(echo "$this_element" | cut -d $array_sep -f 2 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
                 print_info $write_file "$f_listiso" "$name_element" "$descri_element"
             fi
         else
             # inserisce l'elemento analizzato
-            print_info $write_file "$f_listiso" "$element" "$descri_iso"
+            print_info $write_file "$f_listiso" "$t_element" "$descri_iso"
         fi
     done
 

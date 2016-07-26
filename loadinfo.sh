@@ -26,7 +26,7 @@ type_distro="distro"        # parametro per recuperare le informazioni delle dis
 
 array_sep="|"               # carattere di separazione delle colonne
 
-row_len=60                  # lunghezza di una riga di informazioni
+row_len=50                  # lunghezza di una riga di informazioni
 fcol_len=16                 # lunghezza della prima colonna delle informazioni
 
 # imposta la rigenerazione del file delle informazioni
@@ -128,7 +128,8 @@ function print_info()
 #---------------------------------------------------------------------------------------------------------
 # Main procedure
 
-header_sep=$(eval printf '%0.1s' "-"{1..$row_len})
+h_len=$(echo $(($row_len - 1)))
+header_sep=$(eval printf '%0.1s' "-"{1..$h_len})
 
 # primo parametro passato 'lista distribuzioni'
 if [ $infotype == $type_distro ]; then
@@ -153,9 +154,9 @@ if [ $infotype == $type_distro ]; then
         descri_element=$(echo "$header_distro4" | cut -d $array_sep -f 2 | sed -e 's/^\ //')
         print_info $write_file "$f_listdistro" "$name_element" "$descri_element"
         if [ $write_file -eq 1 ]; then
-            echo "# $header_sep" >> "$f_listdistro$ext_tmp"
+            echo "#$header_sep" >> "$f_listdistro$ext_tmp"
         else
-            echo "# $header_sep"
+            echo "#$header_sep"
         fi
     fi
 
@@ -214,9 +215,9 @@ else
         descri_element=$(echo "$header_iso4" | cut -d $array_sep -f 2 | sed -e 's/^\ //')
         print_info $write_file "$f_listiso" "$name_element" "$descri_element"
         if [ $write_file -eq 1 ]; then
-            echo "# $header_sep" >> "$f_listiso$ext_tmp"
+            echo "#$header_sep" >> "$f_listiso$ext_tmp"
         else
-            echo "# $header_sep"
+            echo "#$header_sep"
         fi
     fi
 

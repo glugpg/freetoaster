@@ -5,14 +5,13 @@ header_distro2="# N.B. il file deve terminare con una riga vuota"
 header_distro3="#"
 header_distro4="# nome distro  | descrizione"
 
-descri_distro="...descrizione distribuzione..."
-
 header_iso1="# ELENCO DELLE ISO -"
 header_iso2="# N.B. il file deve terminare con una riga vuota"
 header_iso3="#"
 header_iso4="# nome iso    | descrizione"
 
 distro_name=""
+descri_distro="...descrizione distribuzione..."
 descri_iso="...descrizione iso..."
 
 f_listiso="listiso.info"    # file con la list delle iso per una distribuzione
@@ -29,6 +28,10 @@ array_sep="|"               # carattere di separazione delle colonne
 row_len=50                  # lunghezza di una riga di informazioni
 fcol_len=16                 # lunghezza della prima colonna delle informazioni
 
+
+# imposta la generazione delle descrizioni in modlità non automatica
+a_descri=0
+
 # imposta la rigenerazione del file delle informazioni
 write_file=0
 
@@ -39,9 +42,12 @@ header_file=0
 infotype=$type_distro
 
 # legge i parametri passati allo script
-while getopts "f:hil:t:w" params
+while getopts "af:hil:t:w" params
 do
     case "$params" in
+        a)
+            a_descri=1
+            ;;
         f)
             if [ -n "$OPTARG" ]; then
                 fcol_len="$OPTARG"
@@ -53,7 +59,8 @@ do
             echo    "     Mostra la lista delle distribuzioni(directories)"
             echo    "     oppure delle ISO (file *.iso) presenti nella "
             echo    "     directory corrente"
-            echo 
+            echo
+            echo    "     -a        genera la descrizione in maniera automatica"
             echo    "     -f LENGTH larghezza della prima colonna della lista"
             echo    "     -h        mostra queste informazioni ed esce"
             echo    "     -i        crea un nuovo file"
@@ -108,6 +115,27 @@ function rename_tmp()
             mv "$2$ext_tmp" "$2"
         fi
     fi
+}
+
+function auto_descri()
+{
+    result=""
+    name_tmp=""
+
+    if [ "$1" == "$type_distro" ]; then
+        name_tmp=${2//\//}
+        result=$(echo "$name_tmp" | tr [[:lower:]] [[:upper:]])
+    else
+
+        name_tmp=$(echo ${2//\.iso/})
+        name_tmp=$(echo "$name_tmp" | tr "$3" " " | tr "$4" " ")
+        words=($name_tmp)
+
+        name_tmp="${words[0]} ${words[1]}"
+        result=$(echo "$name_tmp" | sed -e 's/\b\(.\)/\u\1/g')
+    fi
+
+    echo _"$result"_
 }
 
 function print_info()
@@ -173,6 +201,10 @@ if [ $infotype == $type_distro ]; then
             if [ -e "$f_listdistro" ]; then
                 this_element=$(grep -e "^$t_element" "$f_listdistro")
                 if [ -z "$this_element" ]; then
+                    if [ $a_descri -eq 1 ]; then
+                        # genera la descrizione dell'elemento in maniera automatica
+                        descri_distro=$(auto_descri "$type_distro" "$t_element")
+                    fi
                     # inserisce l'elemento analizzato
                     print_info $write_file "$f_listdistro" "$t_element" "$descri_distro"
                 else
@@ -183,6 +215,10 @@ if [ $infotype == $type_distro ]; then
                     print_info $write_file "$f_listdistro" "$name_element" "$descri_element"
                 fi
             else
+                if [ $a_descri -eq 1 ]; then
+                    # genera la descrizione dell'elemento in maniera automatica
+                    descri_distro=$(auto_descri "$type_distro" "$t_element")
+                fi
                 # inserisce la distribuzione
                 print_info $write_file "$f_listdistro" "$t_element" "$descri_distro"
             fi
@@ -231,6 +267,10 @@ else
         if [ -e "$f_listiso" ]; then
             this_element=$(grep -e "^$t_element" "$f_listiso")
             if [ -z "$this_element" ]; then
+                if [ $a_descri -eq 1 ]; then
+                    # genera la descrizione dell'elemento in maniera automatica
+                    descri_iso=$(auto_descri "$type_iso" "$t_element" "-" "_")
+                fi
                 # inserisce l'elemento analizzato
                 print_info $write_file "$f_listiso" "$t_element" "$descri_iso"
             else
@@ -242,6 +282,10 @@ else
             fi
         else
             # inserisce l'elemento analizzato
+            if [ $a_descri -eq 1 ]; then
+                # genera la descrizione dell'elemento in maniera automatica
+                descri_iso=$(auto_descri "$type_iso" "$t_element" "-" "_")
+            fi
             print_info $write_file "$f_listiso" "$t_element" "$descri_iso"
         fi
     done

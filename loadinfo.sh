@@ -5,14 +5,16 @@ header_distro2="# N.B. il file deve terminare con una riga vuota"
 header_distro3="#"
 header_distro4="# nome distro  | descrizione"
 
+descri_distro="...descrizione distribuzione..."
+
 header_iso1="# ELENCO DELLE ISO -"
 header_iso2="# N.B. il file deve terminare con una riga vuota"
 header_iso3="#"
 header_iso4="# nome iso    | descrizione"
 
-distro_name=""
-descri_distro="...descrizione distribuzione..."
 descri_iso="...descrizione iso..."
+
+distro_name=""
 
 f_listiso="listiso.info"    # file con la list delle iso per una distribuzione
 f_listdistro="distro.info"  # file con la lista delle tipologie di distribuzioni
@@ -27,7 +29,6 @@ array_sep="|"               # carattere di separazione delle colonne
 
 row_len=50                  # lunghezza di una riga di informazioni
 fcol_len=16                 # lunghezza della prima colonna delle informazioni
-
 
 # imposta la generazione delle descrizioni in modlità non automatica
 a_descri=0

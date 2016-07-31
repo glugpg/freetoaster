@@ -271,6 +271,12 @@ do
                     # esegue la funzione per la selezione del device USB
                     select_usbdevice
                     if [ ! -z "$f_usbdev" ]; then
+                        # verifica se device USB montato
+                        mounted=$(mount | grep "$f_usbdev" | cut -d " " -f 1)
+                        if [ ! -z "$mounted" ]; then
+                            # smonta il device USB
+                            sudo umount "$mounted"
+                        fi
                         sudo dd if=$f_dist | pv | sudo dd of=$f_usbdev bs=$std_buffer
                         exit_val="$?"
                         sync

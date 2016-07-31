@@ -1,0 +1,9 @@
+# Regola che permette i seguenti comandi 
+# senza richiedere l'autenticazione utente:
+# - dd
+# - mount
+# - umount
+
+Cmnd_Alias WRITEISO = /bin/dd, /bin/mount, /bin/umount
+
+ALL ALL = NOPASSWD:WRITEISO

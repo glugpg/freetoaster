@@ -1,5 +1,5 @@
-# Regola che permette i seguenti comandi 
-# senza richiedere l'autenticazione utente:
+# Regola che permette l'esecuzione dei seguenti comandi 
+# come root senza richiedere l'autenticazione utente:
 # - dd
 # - mount
 # - umount
